@@ -1,32 +1,23 @@
-﻿using CESIL.SHARED;
-using Linker;
+﻿using Linker;
+using SamplesShared;
 using System;
 using System.Collections.Generic;
 
-namespace CESIL.MAIN
+namespace NodeTest
 {
     class Program
     {
-        static void Main(string[] args)
-        {
-            if (args is null)
-            {
-
-            }
-
-            new Server();
-
-        }
+        static void Main(string[] args) => new Server();
 
         public class Server
         {
-            private readonly Node _server = new Node("CESIL_PIPE");
+            private readonly Node _server = new Node("TEST_PIPE");
 
             private readonly ISet<string> _clients = new HashSet<string>();
 
             private readonly StreamProcessor _processor = new StreamProcessor();
 
-            readonly bool isRunning = true;
+            private readonly bool isRunning = true;
 
             public Server()
             {
@@ -43,30 +34,16 @@ namespace CESIL.MAIN
                     var input = Console.ReadLine();
 
                     if (input == "exit")
-                    {
                         isRunning = false;
-                    }
-                    else
-                    {
-                        _processor.SendToAll(_server, new TestClass() { Text = input });
-                    }
+                    else  _processor.SendToAll(_server, new TestClass() { Text = input });              
                 }
             }
 
-            private void Server_Error(Exception exception)
-            {
-                Console.WriteLine(exception.Message);
-            }
+            private void Server_Error(Exception exception) => Console.WriteLine(exception.Message);
 
-            private void OnTestClass(TestClass obj)
-            {
-                Console.WriteLine(obj.Text);
-            }
+            private void OnTestClass(TestClass obj) => Console.WriteLine(obj.Text);
 
-            private void Server_ClientMessage(Link connection, byte[] message)
-            {
-                _processor.ReadPacket(message);
-            }
+            private void Server_ClientMessage(Link connection, byte[] message) => _processor.ReadPacket(message);
 
             private void OnClientConnected(Link connection)
             {

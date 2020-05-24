@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29709.97
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linker", "Linker\Linker.csproj", "{2ED87B78-515E-4FF4-A5D0-E47308F59A86}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CBC1B8FA-7811-4187-B31F-5B8C51B2FCBA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{2E2DEFE9-E693-42F9-861E-272D29AF46B9}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SamplesShared", "..\samples\SamplesShared\SamplesShared.shproj", "{15A23EEC-E629-4064-9D79-0B1F3088943A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodeTest", "..\samples\NodeTest\NodeTest.csproj", "{F428F1F1-DE66-45D1-8811-943F06DE020B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortalTest", "..\samples\PortalTest\PortalTest.csproj", "{C9F29939-A58F-4F36-8E51-CDB107D111E8}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\samples\SamplesShared\SamplesShared.projitems*{15a23eec-e629-4064-9d79-0b1f3088943a}*SharedItemsImports = 13
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2ED87B78-515E-4FF4-A5D0-E47308F59A86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ED87B78-515E-4FF4-A5D0-E47308F59A86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ED87B78-515E-4FF4-A5D0-E47308F59A86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ED87B78-515E-4FF4-A5D0-E47308F59A86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F428F1F1-DE66-45D1-8811-943F06DE020B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F428F1F1-DE66-45D1-8811-943F06DE020B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F428F1F1-DE66-45D1-8811-943F06DE020B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F428F1F1-DE66-45D1-8811-943F06DE020B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9F29939-A58F-4F36-8E51-CDB107D111E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9F29939-A58F-4F36-8E51-CDB107D111E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9F29939-A58F-4F36-8E51-CDB107D111E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9F29939-A58F-4F36-8E51-CDB107D111E8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2ED87B78-515E-4FF4-A5D0-E47308F59A86} = {CBC1B8FA-7811-4187-B31F-5B8C51B2FCBA}
+		{15A23EEC-E629-4064-9D79-0B1F3088943A} = {2E2DEFE9-E693-42F9-861E-272D29AF46B9}
+		{F428F1F1-DE66-45D1-8811-943F06DE020B} = {2E2DEFE9-E693-42F9-861E-272D29AF46B9}
+		{C9F29939-A58F-4F36-8E51-CDB107D111E8} = {2E2DEFE9-E693-42F9-861E-272D29AF46B9}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0B4AC548-7034-41EB-9C3E-8B78C3809D6B}
+	EndGlobalSection
+EndGlobal
