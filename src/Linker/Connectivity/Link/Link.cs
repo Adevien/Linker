@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO.Pipes;
-using System.Threading;
+using System.Timers;
 
 namespace Linker
 {
@@ -10,6 +10,8 @@ namespace Linker
         public readonly int Id;
 
         public readonly string Name;
+
+        public bool UseRecursion = false;
 
         public bool IsConnected { get { return _streamWrapper.IsConnected; } }
 
@@ -21,17 +23,18 @@ namespace Linker
 
         private readonly StreamWrapper _streamWrapper;
 
-        private readonly AutoResetEvent _writeSignal = new AutoResetEvent(false);
+        private readonly System.Threading.AutoResetEvent _writeSignal = new System.Threading.AutoResetEvent(false);
 
         private readonly Queue<byte[]> _writeQueue = new Queue<byte[]>();
 
         private bool _notifiedSucceeded;
 
-        internal Link(int id, string name, PipeStream nodeStream)
+        internal Link(int id, string name, PipeStream nodeStream, bool recursion)
         {
             Id = id;
             Name = name;
             _streamWrapper = new StreamWrapper(nodeStream);
+            UseRecursion = recursion;
         }
 
         public void Open()
@@ -75,7 +78,28 @@ namespace Linker
 
         private void ReadPipe()
         {
-            while (IsConnected && _streamWrapper.CanRead)
+            if(UseRecursion)
+            {
+                    ContinueRead();            
+            }
+            else
+            {
+                while (IsConnected && _streamWrapper.CanRead)
+                {
+                    var obj = _streamWrapper.Read();
+                    if (obj == null)
+                    {
+                        CloseImpl();
+                        return;
+                    }
+                    ReceiveData?.Invoke(this, obj);
+                }
+            }
+        }
+
+        private void ContinueRead()
+        {
+            if (IsConnected && _streamWrapper.CanRead)
             {
                 var obj = _streamWrapper.Read();
                 if (obj == null)
@@ -83,20 +107,48 @@ namespace Linker
                     CloseImpl();
                     return;
                 }
-                ReceiveData?.Invoke(this, obj);
+                    ReceiveData?.Invoke(this, obj);
+
+                ContinueRead();
             }
         }
 
         private void WritePipe()
         {
-            while (IsConnected && _streamWrapper.CanWrite)
+            if(UseRecursion)
             {
-                _writeSignal.WaitOne();
-                while (_writeQueue.Count > 0)
+                ContinueWrite();
+            }
+            else
+            {
+                while (IsConnected && _streamWrapper.CanWrite)
                 {
-                    _streamWrapper.Write(_writeQueue.Dequeue());
-                    _streamWrapper.WaitForPipeDrain();
+                    _writeSignal.WaitOne();
+                    while (_writeQueue.Count > 0)
+                    {
+                        _streamWrapper.Write(_writeQueue.Dequeue());
+                        _streamWrapper.WaitForPipeDrain();
+                    }
                 }
+            }
+        }
+
+        private void ContinueWrite()
+        {
+            if (IsConnected && _streamWrapper.CanWrite)
+            {
+                KeepWrite();
+            }
+        }
+
+        private void KeepWrite()
+        {
+            _writeSignal.WaitOne();
+            if (_writeQueue.Count > 0)
+            {
+                _streamWrapper.Write(_writeQueue.Dequeue());
+                _streamWrapper.WaitForPipeDrain();
+                KeepWrite();
             }
         }
     }

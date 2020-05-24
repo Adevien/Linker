@@ -18,6 +18,8 @@ namespace Linker
 
         private Link _link;
 
+        public bool UseRecursion = false;
+
         private readonly AutoResetEvent _linked = new AutoResetEvent(false);
         private readonly AutoResetEvent _unlinked = new AutoResetEvent(false);
 
@@ -62,7 +64,7 @@ namespace Linker
 
             var dataPipe = PortalFactory.CreateAndConnectPipe(Encoding.UTF8.GetString(dataPipeName));
 
-            _link = LinkFactory.CreateConnection(dataPipe);
+            _link = LinkFactory.CreateConnection(dataPipe, UseRecursion);
             _link.Unlinked += UnlinkedEvent;
             _link.ReceiveData += ReceiveEvent;
             _link.LinkingError += LinkingErrorEvent;

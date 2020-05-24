@@ -25,6 +25,9 @@ namespace PortalTest
             pipeClient.Linked += PipeClient_Linked;
             pipeClient.Start();
 
+            // Enable if you don't want while loops (for windows service)
+            //pipeClient.UseRecursion = true;
+
             _processor.Register<TestClass>(OnTestClassReceived);
 
             while (isRunning)

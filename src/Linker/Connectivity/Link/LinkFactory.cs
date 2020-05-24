@@ -6,6 +6,6 @@ namespace Linker
     {
         private static int _lastId;
 
-        public static Link CreateConnection(PipeStream pipeStream) => new Link(++_lastId, "Portal " + _lastId, pipeStream);
+        public static Link CreateConnection(PipeStream pipeStream, bool UseRecursion) => new Link(++_lastId, "Portal " + _lastId, pipeStream, UseRecursion);
     }
 }

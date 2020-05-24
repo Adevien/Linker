@@ -27,6 +27,9 @@ namespace NodeTest
                 _server.Error += Server_Error;
                 _server.Start();
 
+                // Enable if you don't want while loops (for windows service)
+                //_server.UseRecursion = true;
+
                 _processor.Register<TestClass>(OnTestClass);
 
                 while (isRunning)

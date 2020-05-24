@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Text;
+using System.Timers;
 
 namespace Linker
 {
@@ -14,6 +15,8 @@ namespace Linker
         public event LinkReceiveEventHandler PortalReceived;
 
         public event LinkExceptionHandler Error;
+
+        public bool UseRecursion = false;
 
         private readonly string _nodeName;
 
@@ -30,7 +33,9 @@ namespace Linker
 
         public void Start()
         {
-            _shouldKeepRunning = true;
+            if(!UseRecursion)
+               _shouldKeepRunning = true;
+       
             var worker = new Worker();
             worker.Error += OnError;
             worker.DoWork(ListenSync);
@@ -72,7 +77,11 @@ namespace Linker
 
         public void Stop()
         {
-            _shouldKeepRunning = false;
+            if (UseRecursion)
+            {
+                IsRunning = false;
+            }
+            else _shouldKeepRunning = false;
 
             lock (_connections)
             {
@@ -91,12 +100,21 @@ namespace Linker
 
         private void ListenSync()
         {
-            IsRunning = true;
-            while (_shouldKeepRunning)
+            if(UseRecursion)
             {
-                WaitForConnection(_nodeName);
+                IsRunning = true;
+                if (IsRunning)
+                    WaitForConnection(_nodeName);
             }
-            IsRunning = false;
+            else
+            {
+                IsRunning = true;
+                while (_shouldKeepRunning)
+                {
+                    WaitForConnection(_nodeName);
+                }
+                IsRunning = false;
+            }
         }
 
         private void WaitForConnection(string pipeName)
@@ -118,7 +136,7 @@ namespace Linker
                 dataPipe = PipeServerFactory.CreatePipe(connectionPipeName);
                 dataPipe.WaitForConnection();
 
-                connection = LinkFactory.CreateConnection(dataPipe);
+                connection = LinkFactory.CreateConnection(dataPipe, UseRecursion);
                 connection.ReceiveData += ClientOnReceiveMessage;
                 connection.Unlinked += ClientOnDisconnected;
                 connection.LinkingError += ConnectionOnError;
@@ -130,6 +148,11 @@ namespace Linker
                 }
 
                 ClientOnConnected(connection);
+
+
+                if(IsRunning)
+                    WaitForConnection(_nodeName);
+
             }
             catch (Exception e)
             {
